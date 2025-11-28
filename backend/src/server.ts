@@ -4,19 +4,35 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 
 const app = express();
-app.use(cors());
+app.use(cors(
+  {
+    origin: "http://localhost:5173",
+    credentials: true
+  }
+
+));
 app.use(express.json());
 
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-  cors: { origin: "http://localhost:5173" }
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
 
 app.get("/", (req, res) => {
-  res.json({ message: "Server is running" });
+  res.send('<h1>Hello world</h1>');
 });
 
+app.get("/name", (req, res) => {
+  console.log("req", req);
+  res.json({
+    "ping": "pong",
+  });
+})
 
 // WebSocket connection
 io.on('connection', (socket) => {
